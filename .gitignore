@@ -1,0 +1,20 @@
+# 忽略：依赖、构建产物、本地草稿与抓取素材
+node_modules/
+.npm-cache/
+
+# 本地站点工程（另有仓库）
+site/
+site-adapted/
+promo/
+
+# 抓取/解包的参考资料
+ref/
+
+# 截图与检查产出
+shots/
+.taste-skill/
+
+# 系统
+Thumbs.db
+desktop.ini
+.DS_Store
