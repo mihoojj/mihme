@@ -1,12 +1,12 @@
 # mihme
 
-一页式个人介绍页。单文件、零依赖，双击 `personal-intro.html` 就能在浏览器里打开。
+一页式个人介绍页。单文件、零依赖，双击 `index.html` 就能在浏览器里打开。
 
 深色 / 浅色双主题，带开屏动画、滚动揭幕和一套克制的指针动效。没有任何构建步骤，也没有外部字体和图片请求——断网也能完整显示。
 
 ## 看效果
 
-直接打开 `personal-intro.html`。
+直接打开 `index.html`。
 
 - 右上角的玻璃球开关切换明暗主题（首次按系统偏好初始化，之后记住选择）。
 - 开屏动画每个标签页只播一次；想再看一次，地址后面加 `?boot=1`。
@@ -14,7 +14,7 @@
 
 ## 改成你自己的
 
-所有内容都在 `personal-intro.html` 一个文件里，按注释找位置：
+所有内容都在 `index.html` 一个文件里，按注释找位置：
 
 | 要改的东西 | 位置 |
 | --- | --- |
@@ -38,7 +38,7 @@
 # 启动隔离的 headless Chrome，跑 scripts 里任何 ab-*.js，然后只关自己启动的那个进程
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\ab-run.ps1 `
   -Script tools\ab-page.js `
-  -ScriptArgs '"file:///C:/path/personal-intro.html","shots/full.png","1440","900","0","1"'
+  -ScriptArgs '"file:///C:/path/index.html","shots/full.png","1440","900","0","1"'
 ```
 
 - 用独立的临时 profile 和独立端口，不和本机正在使用的浏览器发生关系。
