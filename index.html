@@ -378,20 +378,53 @@ html.is-booting{ overflow: hidden; }
 }
 .boot__row b{ color: var(--ink); font-weight: 500; }
 
-.boot__greet{
-  position: relative;
-  z-index: 1;
-  margin: 0;
+.boot__stage{
+  flex: 1;
+  min-height: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  min-height: 1.06em;
+  justify-content: center;
+  gap: clamp(18px, 3vw, 34px);
+  text-align: center;
+}
+
+.boot__greet{
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(46px, 9.4vw, 132px);
+  font-size: clamp(54px, 11.5vw, 172px);
   line-height: 1;
   letter-spacing: -.045em;
 }
-.boot__greet span{ display: block; will-change: transform, opacity; }
+.boot__greet span{ display: block; will-change: transform, opacity, filter; }
+
+.boot__meter{
+  position: relative;
+  width: clamp(140px, 22vw, 240px);
+  height: 1px;
+  background: var(--line-strong);
+  overflow: hidden;
+}
+.boot__meter i{
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(var(--b, 0));
+  transform-origin: left;
+  transition: transform 280ms var(--ease-out);
+}
+
+.boot__count{
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+.boot__count b{ color: var(--ink); font-weight: 500; }
 
 .boot__track{
   position: relative;
@@ -1285,14 +1318,15 @@ body.is-ready .line > span{ animation-play-state: running; }
     <span>Portfolio / 2026</span>
   </div>
 
-  <p class="boot__greet"><span id="bootGreet">Bonjour</span></p>
+  <div class="boot__stage">
+    <p class="boot__greet"><span id="bootGreet">Bonjour</span></p>
+    <div class="boot__meter"><i id="bootBar"></i></div>
+    <p class="boot__count"><b id="bootNum">01</b> / 08</p>
+  </div>
 
-  <div>
-    <div class="boot__track"><i id="bootBar"></i></div>
-    <div class="boot__row">
-      <span>Full-stack Engineer</span>
-      <span><b id="bootNum">01</b> / 08</span>
-    </div>
+  <div class="boot__row">
+    <span>Full-stack Engineer</span>
+    <span>GMT+8</span>
   </div>
 </div>
 
@@ -1762,11 +1796,14 @@ body.is-ready .line > span{ animation-play-state: running; }
       var word = greetings[gi];
       if (greetEl) {
         greetEl.textContent = word;
-        // 只做一个极短的位移，不压透明度：词换得快，读起来才像"翻牌"
         if (greetEl.animate) {
+          // 只动位移和虚化，不压透明度：词一直在，读起来才不像闪烁
           greetEl.animate(
-            [{ transform: 'translateY(7px)' }, { transform: 'none' }],
-            { duration: 95, easing: 'cubic-bezier(.16,1,.3,1)' }
+            [
+              { transform: 'translateY(12px)', filter: 'blur(3px)' },
+              { transform: 'none', filter: 'blur(0px)' }
+            ],
+            { duration: 190, easing: 'cubic-bezier(.16,1,.3,1)' }
           );
         }
       }
@@ -1774,10 +1811,10 @@ body.is-ready .line > span{ animation-play-state: running; }
       if (bootBar) bootBar.style.setProperty('--b', ((gi + 1) / greetings.length).toFixed(3));
       gi++;
       if (gi < greetings.length) {
-        // 中文那条停留久一点，名字最后收住
-        setTimeout(nextGreet, word === '你好' ? 360 : 135);
+        // 慢一点：每个词 250ms，中文停 600ms，最后的名字停更久
+        setTimeout(nextGreet, word === '你好' ? 600 : 250);
       } else {
-        setTimeout(lift, 260);
+        setTimeout(lift, 700);
       }
     };
 
