@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>YI CHEN — Design &amp; Engineering</title>
-<meta name="description" content="陈奕的个人介绍页示例：把想法做成能跑的东西。设计与工程双栖，杭州。" />
+<title>mihoo — Full-stack Engineer</title>
+<meta name="description" content="mihoo，蚂蚁系全栈开发工程师。从想法到上线，前后端自己走完一遍。" />
 <meta name="theme-color" content="#070a14" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070a14'/%3E%3Crect x='6' y='6' width='8' height='8' fill='%23d4ff3f'/%3E%3Crect x='18' y='18' width='8' height='8' fill='%23d4ff3f'/%3E%3C/svg%3E" />
 
@@ -378,25 +378,20 @@ html.is-booting{ overflow: hidden; }
 }
 .boot__row b{ color: var(--ink); font-weight: 500; }
 
-.boot__word{
+.boot__greet{
   position: relative;
   z-index: 1;
   margin: 0;
+  display: flex;
+  align-items: center;
+  min-height: 1.06em;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(48px, 11.6vw, 168px);
-  line-height: .86;
-  letter-spacing: -.05em;
-  text-transform: uppercase;
+  font-size: clamp(46px, 9.4vw, 132px);
+  line-height: 1;
+  letter-spacing: -.045em;
 }
-.boot__word span{ display: block; overflow: hidden; padding-bottom: .04em; }
-.boot__word i{
-  display: block;
-  font-style: normal;
-  transform: translateY(110%);
-  animation: rise 820ms var(--ease-out) forwards;
-  animation-delay: calc(60ms + var(--i, 0) * 90ms);
-}
+.boot__greet span{ display: block; will-change: transform, opacity; }
 
 .boot__track{
   position: relative;
@@ -761,9 +756,32 @@ body.is-ready .line > span{ animation-play-state: running; }
   align-items: baseline;
   padding: clamp(15px, 1.8vw, 24px) 0;
   border-bottom: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
   transition: border-color var(--dur-move) var(--ease-ui);
 }
 .now__row:first-child{ border-top: 1px solid var(--line); }
+
+/* 作品区：还没有作品时的空位 */
+.work__pending{
+  border-top: 1px solid var(--line);
+  padding-top: clamp(24px, 3vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.work__pending-lead{
+  margin: 0;
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+  color: var(--ink-faint);
+}
+.work__pending-note{
+  margin: 0;
+  color: var(--ink-faint);
+}
 
 .now__row::before{
   content: "";
@@ -1260,23 +1278,20 @@ body.is-ready .line > span{ animation-play-state: running; }
 
 <body>
 
-<!-- 开屏：名字卡 → 向上揭幕 -->
+<!-- 开屏：多语言问候 → 向上揭幕 -->
 <div class="boot" id="boot" aria-hidden="true">
   <div class="boot__row">
-    <span><b>YICHEN.DESIGN</b></span>
+    <span><b>MIHOO</b></span>
     <span>Portfolio / 2026</span>
   </div>
 
-  <p class="boot__word">
-    <span><i style="--i:0">Yi</i></span>
-    <span><i style="--i:1">Chen</i></span>
-  </p>
+  <p class="boot__greet"><span id="bootGreet">Bonjour</span></p>
 
   <div>
     <div class="boot__track"><i id="bootBar"></i></div>
     <div class="boot__row">
-      <span>Design &amp; Engineering</span>
-      <span><b id="bootNum">000</b> / 100</span>
+      <span>Full-stack Engineer</span>
+      <span><b id="bootNum">01</b> / 08</span>
     </div>
   </div>
 </div>
@@ -1287,9 +1302,9 @@ body.is-ready .line > span{ animation-play-state: running; }
 
 <header class="hud" id="hud">
   <div class="hud__row">
-    <div class="hud__brand">YICHEN.DESIGN</div>
+    <div class="hud__brand">MIHOO</div>
     <nav class="hud__nav" aria-label="主导航">
-      <a class="hud__link" href="#now">Now</a>
+      <a class="hud__link" href="#now">Index</a>
       <a class="hud__link" href="#work">Work</a>
       <a class="hud__link" href="#path">Path</a>
       <a class="hud__link" href="#contact">Contact</a>
@@ -1328,25 +1343,25 @@ body.is-ready .line > span{ animation-play-state: running; }
     </div>
 
     <div class="hero__meta">
-      <p class="hero__role r" style="--d:0ms">Design &amp;<br>Engineering</p>
+      <p class="hero__role r" style="--d:0ms">Full-stack<br>Engineer</p>
       <p class="hero__tagline r" style="--d:70ms">
-        在系统里思考。<br>
-        在细节里交付。
+        前端到后端，<br>
+        自己走完一遍。
       </p>
       <p class="hero__bio r" style="--d:140ms">
-        我是<strong>陈奕</strong>，一个在杭州做设计与前端的人。白天画界面、写组件，晚上折腾 WebGL 和一点独立产品。我相信好产品是「想清楚」和「做出来」之间那条最短的路，所以两头都得自己走一遍。
+        我是<strong>mihoo</strong>，蚂蚁系全栈开发工程师。写业务代码，也写自己的东西；喜欢把模糊的需求拆成能上线的功能，再回头看哪里还能更简单。
       </p>
     </div>
 
     <div class="hero__foot">
       <h1 class="hero__title">
-        <span class="line" style="--i:0"><span>I Turn</span></span>
-        <span class="line" style="--i:1"><span>Ideas Into</span></span>
-        <span class="line" style="--i:2"><span><em>Things That Run</em></span></span>
+        <span class="line" style="--i:0"><span>From</span></span>
+        <span class="line" style="--i:1"><span>Idea</span></span>
+        <span class="line" style="--i:2"><span><em>To Shipped</em></span></span>
       </h1>
 
       <div class="hero__aside">
-        <a class="btn" href="mailto:hi@yichen.design">
+        <a class="btn" href="mailto:mihooj23@gmail.com">
           写封邮件
           <span class="btn__arrow" aria-hidden="true">↗</span>
         </a>
@@ -1357,27 +1372,27 @@ body.is-ready .line > span{ animation-play-state: running; }
 
   <section class="sec" id="now">
     <div class="sec__head">
-      <p class="label r"><b>01</b> — Now / 现在</p>
-      <h2 class="sec__title r" style="--d:60ms">最近在做的事，比履历更能说明我在哪一步。</h2>
-      <p class="sec__note r" style="--d:120ms">4 条 · 2026.06 更新</p>
+      <p class="label r"><b>01</b> — Index / 目录</p>
+      <h2 class="sec__title r" style="--d:60ms">这张页面上有什么，哪些位置还空着。</h2>
+      <p class="sec__note r" style="--d:120ms">4 项</p>
     </div>
 
     <div class="now">
-      <div class="now__row r">
-        <div class="now__key">在做</div>
-        <div class="now__val">一个给独立创作者的内容工作台 <span>／ 内测中</span></div>
-      </div>
-      <div class="now__row r" style="--d:60ms">
-        <div class="now__key">在学</div>
-        <div class="now__val">WebGL、可变字体与排版的工程化</div>
-      </div>
-      <div class="now__row r" style="--d:120ms">
-        <div class="now__key">在写</div>
-        <div class="now__val">每周一封 build log，记录做过什么、错在哪 <span>／ 第 23 期</span></div>
-      </div>
+      <a class="now__row r" href="#work">
+        <div class="now__key">Work</div>
+        <div class="now__val">作品 <span>／ 筹备中，第一件会先发在 X</span></div>
+      </a>
+      <a class="now__row r" href="#path" style="--d:60ms">
+        <div class="now__key">Path</div>
+        <div class="now__val">经历 <span>／ 现在在做什么，之前做过什么</span></div>
+      </a>
+      <a class="now__row r" href="#contact" style="--d:120ms">
+        <div class="now__key">Contact</div>
+        <div class="now__val">联系 <span>／ mihooj23@gmail.com</span></div>
+      </a>
       <div class="now__row r" style="--d:180ms">
-        <div class="now__key">在哪</div>
-        <div class="now__val">杭州 · GMT+8 · 接受远程合作</div>
+        <div class="now__key">Writing</div>
+        <div class="now__val">笔记 <span>／ 还没开始</span></div>
       </div>
     </div>
   </section>
@@ -1388,77 +1403,38 @@ body.is-ready .line > span{ animation-play-state: running; }
     <span class="blob blob--c" aria-hidden="true"></span>
 
     <div class="sec__head">
-      <p class="label r"><b>02</b> — Selected Work / 作品</p>
-      <h2 class="sec__title r" style="--d:60ms">四件自己从头做到尾的东西，从想法、界面一直到部署。</h2>
-      <p class="sec__note r" style="--d:120ms">4 个项目 · 2024—2026</p>
+      <p class="label r"><b>02</b> — Work / 作品</p>
+      <h2 class="sec__title r" style="--d:60ms">这块地方暂时空着。</h2>
+      <p class="sec__note r" style="--d:120ms">筹备中</p>
     </div>
 
-    <div class="work__grid">
-      <a class="card r" href="#" aria-label="Mosaic —— 内容工作台，2026">
-        <div class="card__art art-a" role="img" aria-label="作品封面：深色底上的节点图">
-          <span class="tag">Product Design</span>
-        </div>
-        <div class="card__meta"><span class="card__name">Mosaic — 内容工作台</span><span>2026</span></div>
-      </a>
-
-      <a class="card r" href="#" style="--d:80ms" aria-label="Type Press —— 排版练习生成器，2025">
-        <div class="card__art art-b" role="img" aria-label="作品封面：米色底上的字体样张">
-          <span class="tag">Small Tool</span>
-        </div>
-        <div class="card__meta"><span class="card__name">Type Press — 排版练习生成器</span><span>2025</span></div>
-      </a>
-
-      <a class="card r" href="#" style="--d:40ms" aria-label="Orbit —— 团队设计系统，2024">
-        <div class="card__art art-c" role="img" aria-label="作品封面：蓝色网格上的球体">
-          <span class="tag">Design System</span>
-        </div>
-        <div class="card__meta"><span class="card__name">Orbit — 团队设计系统</span><span>2024</span></div>
-      </a>
-
-      <a class="card r" href="#" style="--d:120ms" aria-label="Night Walk —— 城市夜色影像实验，2024">
-        <div class="card__art art-d" role="img" aria-label="作品封面：放射状条纹">
-          <span class="tag">Side Project</span>
-        </div>
-        <div class="card__meta"><span class="card__name">Night Walk — 城市夜色影像实验</span><span>2024</span></div>
-      </a>
+    <div class="work__pending r">
+      <p class="work__pending-lead">还在攒。</p>
+      <p class="work__pending-note mono">第一件做出来就放这儿，会先发在 X</p>
     </div>
   </section>
 
   <div class="band" aria-hidden="true">
     <div class="band__track">
-      <span><b>Design</b> · Engineering · Typography · Motion · <b>Code</b> · Systems · Writing ·&nbsp;</span>
-      <span><b>Design</b> · Engineering · Typography · Motion · <b>Code</b> · Systems · Writing ·&nbsp;</span>
+      <span><b>Full-stack</b> · Backend · Frontend · Systems · <b>Shipping</b> · Writing ·&nbsp;</span>
+      <span><b>Full-stack</b> · Backend · Frontend · Systems · <b>Shipping</b> · Writing ·&nbsp;</span>
     </div>
   </div>
 
   <section class="sec" id="path">
     <div class="sec__head">
       <p class="label r"><b>03</b> — Path / 经历</p>
-      <h2 class="sec__title r" style="--d:60ms">一条不算直的路：从视觉传达，到交互，到把代码也接过来。</h2>
-      <p class="sec__note r" style="--d:120ms">4 段 · 2015—至今</p>
+      <h2 class="sec__title r" style="--d:60ms">现在在做什么，之前做过什么。</h2>
+      <p class="sec__note r" style="--d:120ms">待补充</p>
     </div>
 
     <div class="path">
       <div class="path__row r">
-        <div class="path__year">2024 — 至今</div>
-        <div class="path__role">独立设计与开发<small>自由职业 / 独立产品</small></div>
-        <div class="path__note">Hangzhou</div>
+        <div class="path__year">现在</div>
+        <div class="path__role">全栈开发工程师<small>蚂蚁系</small></div>
+        <div class="path__note">Full-stack</div>
       </div>
-      <div class="path__row r" style="--d:60ms">
-        <div class="path__year">2021 — 2024</div>
-        <div class="path__role">高级产品设计师<small>互联网公司 · 内容与创作工具</small></div>
-        <div class="path__note">Design Lead</div>
-      </div>
-      <div class="path__row r" style="--d:120ms">
-        <div class="path__year">2019 — 2021</div>
-        <div class="path__role">交互设计师<small>设计工作室 · 品牌与数字产品</small></div>
-        <div class="path__note">Interaction</div>
-      </div>
-      <div class="path__row r" style="--d:180ms">
-        <div class="path__year">2015 — 2019</div>
-        <div class="path__role">视觉传达设计<small>本科 · 辅修计算机</small></div>
-        <div class="path__note">BFA</div>
-      </div>
+      <!-- 往前的经历补在这里：每条一个 .path__row（年份 / 职位+小字 / 注脚） -->
     </div>
   </section>
 
@@ -1475,18 +1451,15 @@ body.is-ready .line > span{ animation-play-state: running; }
         <span><i>Something</i></span>
         <span><i>That Runs</i></span>
       </h2>
-      <a class="contact__mail" href="mailto:hi@yichen.design">hi@yichen.design</a>
+      <a class="contact__mail" href="mailto:mihooj23@gmail.com">mihooj23@gmail.com</a>
     </div>
 
     <div class="contact__foot mono">
       <div class="socials">
-        <a class="hud__link" href="#">Twitter / X</a>
-        <a class="hud__link" href="#">GitHub</a>
-        <a class="hud__link" href="#">Read.cv</a>
-        <a class="hud__link" href="#">Telegram</a>
+        <a class="hud__link" href="https://github.com/mihoojj">GitHub</a>
       </div>
       <div><b style="color: var(--ink)">04</b> — Contact / 联系</div>
-      <div>© <span id="year">2026</span> Yi Chen · 示例文案，替换后即可用</div>
+      <div>© <span id="year">2026</span> mihoo</div>
     </div>
   </section>
 
@@ -1767,13 +1740,10 @@ body.is-ready .line > span{ animation-play-state: running; }
   }
 
   if (boot && root.classList.contains('is-booting')) {
-    var t0 = performance.now();
-    (function step(now) {
-      var p = Math.min(1, Math.max(0, (now - t0) / 900));
-      if (bootNum) bootNum.textContent = ('00' + Math.round(p * 100)).slice(-3);
-      if (bootBar) bootBar.style.setProperty('--b', p.toFixed(3));
-      if (p < 1) requestAnimationFrame(step);
-    })(t0);
+    var greetEl = $('#bootGreet');
+    // 依次用不同语言打招呼，最后落回自己的名字（参考 ansyn.me 的入场）
+    var greetings = ['Bonjour', 'Ciao', 'Olá', 'こんにちは', 'Hallå', 'Guten Tag', '你好', 'mihoo'];
+    var gi = 0;
 
     var lift = function () {
       if (booted) return;
@@ -1781,7 +1751,32 @@ body.is-ready .line > span{ animation-play-state: running; }
       startPage();
       setTimeout(endBoot, 880);
     };
-    setTimeout(lift, 1000);
+
+    var nextGreet = function () {
+      if (booted) return;
+      var word = greetings[gi];
+      if (greetEl) {
+        greetEl.textContent = word;
+        // 只做一个极短的位移，不压透明度：词换得快，读起来才像"翻牌"
+        if (greetEl.animate) {
+          greetEl.animate(
+            [{ transform: 'translateY(7px)' }, { transform: 'none' }],
+            { duration: 95, easing: 'cubic-bezier(.16,1,.3,1)' }
+          );
+        }
+      }
+      if (bootNum) bootNum.textContent = ('0' + (gi + 1)).slice(-2);
+      if (bootBar) bootBar.style.setProperty('--b', ((gi + 1) / greetings.length).toFixed(3));
+      gi++;
+      if (gi < greetings.length) {
+        // 中文那条停留久一点，名字最后收住
+        setTimeout(nextGreet, word === '你好' ? 360 : 135);
+      } else {
+        setTimeout(lift, 260);
+      }
+    };
+
+    nextGreet();
 
     var skip = function () {
       endBoot();
