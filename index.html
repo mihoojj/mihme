@@ -1811,10 +1811,10 @@ body.is-ready .line > span{ animation-play-state: running; }
       if (bootBar) bootBar.style.setProperty('--b', ((gi + 1) / greetings.length).toFixed(3));
       gi++;
       if (gi < greetings.length) {
-        // 慢一点：每个词 250ms，中文停 600ms，最后的名字停更久
-        setTimeout(nextGreet, word === '你好' ? 600 : 250);
+        // 每个词 210ms，中文停 520ms，最后的名字停 600ms 再揭幕
+        setTimeout(nextGreet, word === '你好' ? 520 : 210);
       } else {
-        setTimeout(lift, 700);
+        setTimeout(lift, 600);
       }
     };
 
