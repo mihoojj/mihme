@@ -1085,7 +1085,8 @@ body.is-ready .line > span{ animation-play-state: running; }
 .band__track{
   display: flex;
   width: max-content;
-  animation: band var(--band-dur, 34s) linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .band__track span{
   padding-right: 2.6em;
@@ -1097,7 +1098,6 @@ body.is-ready .line > span{ animation-play-state: running; }
   white-space: nowrap;
 }
 .band__track b{ color: var(--ink); font-weight: 500; }
-@keyframes band{ to{ transform: translateX(-50%); } }
 
 /* --- 陈述 --- */
 .statement{
@@ -1304,7 +1304,7 @@ body.is-ready .line > span{ animation-play-state: running; }
     transition-duration: .001ms !important;
   }
   .r, .line > span, .w > i{ opacity: 1 !important; transform: none !important; }
-  .band__track, .blob{ animation: none; }
+  .blob{ animation: none; }
 }
 </style>
 </head>
@@ -1640,7 +1640,8 @@ body.is-ready .line > span{ animation-play-state: running; }
   /* 滚动：进度 + HUD 收起 + 跑马灯随速度加快 + 陈述揭幕 */
   var progress = $('#progress');
   var band = $('.band__track');
-  var bandTimer = 0;
+  var bandX = 0, bandBoost = 0, bandHalf = 0, bandBase = 26;
+  var bandOn = false, bandInView = false, bandT0 = 0;
   var scrollPend = false;
   var statementDone = false;
 
@@ -1669,11 +1670,9 @@ body.is-ready .line > span{ animation-play-state: running; }
       if (y > window.innerHeight * .9 && y > lastY + 4) hud.classList.add('is-hidden');
       else if (y < lastY - 6 || y < 120) hud.classList.remove('is-hidden');
     }
-    if (band && Math.abs(y - lastY) > 2) {
-      var dur = Math.max(15, 34 - Math.abs(y - lastY) * 1.6);
-      band.style.setProperty('--band-dur', dur.toFixed(1) + 's');
-      clearTimeout(bandTimer);
-      bandTimer = setTimeout(function () { band.style.setProperty('--band-dur', '34s'); }, 420);
+    if (band && Math.abs(y - lastY) > 1.5) {
+      /* 只抬速度，不碰位移：回落到基准由 rAF 里做指数衰减 */
+      bandBoost = Math.min(1.4, bandBoost + Math.abs(y - lastY) * .1);
     }
     updateHudInk();
     updateStatement();
@@ -1689,6 +1688,64 @@ body.is-ready .line > span{ animation-play-state: running; }
     scrollPend = true;
     requestAnimationFrame(onScroll);
   }, { passive: true });
+
+  /* 跑马灯：位移交给 rAF 连续推进。
+     以前是在滚动时改 animation-duration——动画进度会按新时长重算，
+     整条轨道瞬间跳位，就是那个"乱动"。现在只改速度，位移永远连续。 */
+  if (band) {
+    var bandSpan = band.children[0];
+
+    function bandMeasure() {
+      bandHalf = bandSpan ? bandSpan.getBoundingClientRect().width : band.scrollWidth / 2;
+      if (!bandHalf) bandHalf = band.scrollWidth / 2;
+      if (bandHalf > 0) bandBase = bandHalf / 34;  /* 保持原来 34s 一圈的手感 */
+    }
+
+    function bandFrame(t) {
+      var dt = bandT0 ? Math.min(64, t - bandT0) : 16;
+      bandT0 = t;
+      bandBoost *= Math.exp(-dt / 300);
+      if (bandBoost < .004) bandBoost = 0;
+      bandX -= bandBase * (1 + bandBoost) * dt / 1000;
+      if (bandX <= -bandHalf) bandX += bandHalf;
+      band.style.transform = 'translate3d(' + bandX.toFixed(2) + 'px, 0, 0)';
+      if (bandOn) requestAnimationFrame(bandFrame);
+    }
+
+    function bandStart() {
+      if (bandOn || reduce) return;
+      bandOn = true;
+      bandT0 = 0;
+      requestAnimationFrame(bandFrame);
+    }
+
+    function bandStop() {
+      bandOn = false;
+    }
+
+    bandMeasure();
+    if (window.ResizeObserver) {
+      new ResizeObserver(bandMeasure).observe(band);
+    } else {
+      window.addEventListener('resize', bandMeasure);
+    }
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        bandInView = es[0].isIntersecting;
+        if (bandInView && !document.hidden) bandStart();
+        else bandStop();
+      }, { rootMargin: '160px 0px' }).observe(band);
+    } else {
+      bandInView = true;
+      bandStart();
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) bandStop();
+      else if (bandInView) bandStart();
+    });
+  }
 
   /* 陈述逐词 */
   var st = $('#statementText');
