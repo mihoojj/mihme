@@ -22,7 +22,8 @@
     var seen = false;
     try { seen = sessionStorage.getItem('boot-seen') === '1'; } catch (e) {}
     var force = /[?&]boot(=1)?(&|$)/.test(location.search);
-    if (!reduce && (!seen || force)) root.classList.add('is-booting');
+    var skip = /[?&]boot=0(&|$)/.test(location.search);   // ?boot=0 直接跳过开屏（截图/审计用）
+    if (!reduce && !skip && (!seen || force)) root.classList.add('is-booting');
   })();
 </script>
 
@@ -795,25 +796,11 @@ body.is-ready .line > span{ animation-play-state: running; }
 }
 .now__row:first-child{ border-top: 1px solid var(--line); }
 
-/* 作品区：还没有作品时的空位 */
-.work__pending{
-  border-top: 1px solid var(--line);
-  padding-top: clamp(24px, 3vw, 40px);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.work__pending-lead{
-  margin: 0;
-  font-size: clamp(28px, 4vw, 52px);
-  font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -.03em;
-  color: var(--ink-faint);
-}
-.work__pending-note{
-  margin: 0;
-  color: var(--ink-faint);
+.work__desc{
+  margin: 14px 0 0;
+  max-width: 42ch;
+  color: var(--ink-soft);
+  line-height: 1.75;
 }
 
 .now__row::before{
@@ -854,165 +841,121 @@ body.is-ready .line > span{ animation-play-state: running; }
 }
 
 /* --- 作品 --- */
-.work__grid{
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: var(--gutter);
+.work__entry{ position: relative; }
+.work__entry + .work__entry{
+  margin-top: clamp(52px, 6.4vw, 100px);
+  padding-top: clamp(36px, 4.4vw, 64px);
+  border-top: 1px solid var(--line);
 }
 
-.card{
-  position: relative;
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  will-change: transform;
+.work__title{
+  margin: 0;
+  font-size: var(--t-lead);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -.015em;
+  max-width: 40ch;
 }
+.work__title span{ color: var(--ink-faint); }
 
-.card:nth-child(1){ grid-column: 1 / span 6; }
-.card:nth-child(2){ grid-column: 8 / span 5; margin-top: clamp(30px, 7vw, 120px); }
-.card:nth-child(3){ grid-column: 2 / span 4; margin-top: clamp(10px, 3vw, 48px); }
-.card:nth-child(4){ grid-column: 7 / span 5; margin-top: clamp(40px, 8vw, 130px); }
-
-.card__art{
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: var(--card);
-  border: 1px solid var(--line);
-  transition: border-color var(--dur-ui) var(--ease-ui), transform var(--dur-move) var(--ease-out);
-}
-.card__art img{ width: 100%; height: 100%; object-fit: cover; }
-
-@media (hover: hover) and (pointer: fine){
-  .card:hover .card__art{ border-color: var(--line-strong); transform: scale(1.012); }
-}
-.card:active .card__art{ transform: scale(.985); }
-
-.tag{
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 2;
-  background: var(--accent);
-  color: var(--accent-ink);
+.work__facts{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
   font-family: var(--font-mono);
   font-size: var(--t-small);
   letter-spacing: .1em;
   text-transform: uppercase;
-  padding: 5px 8px;
-  line-height: 1;
+  color: var(--ink-faint);
+}
+.work__facts b{ color: var(--ink); font-weight: 500; }
+
+/* 第一件：一张大图 + 一条三种状态的横带 */
+.work__plate{ margin: clamp(20px, 2.6vw, 34px) 0 0; }
+.work__plate img{
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  background: var(--card);
 }
 
-.card__meta{
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 12px;
+.work__strip{
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--gutter);
+  margin-top: var(--gutter);
+  --strip-h: clamp(140px, 15vw, 206px);
+}
+.work__still{ margin: 0; }
+.work__still img{
+  display: block;
+  width: 100%;
+  height: var(--strip-h);
+  object-fit: cover;
+  background: var(--card);
+}
+.work__still:nth-child(1){ grid-column: 1 / span 6; }
+.work__still:nth-child(2){ grid-column: 7 / span 3; }
+.work__still:nth-child(3){ grid-column: 10 / span 3; }
+.work__still:nth-child(1) img{ object-position: 0% 50%; }
+.work__still:nth-child(2) img{ object-position: 20% 0%; }
+.work__still:nth-child(3) img{ object-position: 50% 54%; }
+.work__still figcaption{
+  margin-top: 8px;
   font-family: var(--font-mono);
   font-size: var(--t-small);
-  letter-spacing: .08em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-}
-.card__meta span:last-child{ color: var(--ink-faint); flex: none; }
-.card__name{ position: relative; display: inline-block; }
-.card__name::after{
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -2px;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-move) var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine){
-  .card:hover .card__name::after{ transform: scaleX(1); }
+  color: var(--ink-faint);
 }
 
-.art-a{ background: #0d1530; }
-.art-a::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,.28) 1px, transparent 1.2px);
-  background-size: 14px 14px;
-  -webkit-mask-image: radial-gradient(70% 70% at 40% 40%, #000, transparent 75%);
-          mask-image: radial-gradient(70% 70% at 40% 40%, #000, transparent 75%);
+/* 第二件：左文右码，和第一件不是一个版式 */
+.work__split{
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.2fr);
+  gap: clamp(24px, 3.6vw, 56px);
+  align-items: start;
+  margin-top: clamp(18px, 2.2vw, 28px);
 }
-.art-a::after{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 34% 38%, #d4ff3f 0 5px, transparent 6px),
-    radial-gradient(circle at 62% 30%, #7df9ff 0 4px, transparent 5px),
-    radial-gradient(circle at 52% 64%, #ff5ec4 0 4px, transparent 5px),
-    radial-gradient(circle at 74% 58%, #d4ff3f 0 3px, transparent 4px),
-    radial-gradient(60% 60% at 50% 50%, rgba(60,80,255,.55), transparent 70%);
+.work__code{
+  margin: 0;
+  padding: clamp(14px, 1.6vw, 20px) clamp(16px, 1.8vw, 22px);
+  background: var(--bg);
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.8;
+  overflow-x: auto;
+  tab-size: 2;
 }
-.art-b{ background: #efece2; }
-.art-b::before{
-  content: "Aa";
-  position: absolute;
-  left: 8%;
-  top: 2%;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: clamp(64px, 11vw, 150px);
-  line-height: 1;
-  letter-spacing: -.05em;
-  color: #14140f;
+.work__code .c{ color: var(--ink-faint); }
+.work__code code{ font-family: inherit; }
+
+.work__tail{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  align-items: baseline;
+  margin: clamp(34px, 4vw, 58px) 0 0;
+  padding-top: clamp(22px, 2.6vw, 34px);
+  border-top: 1px solid var(--line);
+  color: var(--ink-faint);
 }
-.art-b::after{
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: 62%;
-  height: 1px;
-  background: #e0402f;
-  box-shadow: 0 18px 0 #14140f, 0 36px 0 rgba(20,20,15,.35);
-}
-.art-c{ background: #1b2bd8; }
-.art-c::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px);
-  background-size: 34px 34px;
-}
-.art-c::after{
-  content: "";
-  position: absolute;
-  width: 42%;
-  aspect-ratio: 1;
-  left: 30%;
-  top: 26%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff 0%, #cfe0ff 30%, #6d7bff 70%, #2a2f9e 100%);
-  box-shadow: 0 24px 60px rgba(0,0,0,.45);
-}
-.art-d{ background: #14140f; }
-.art-d::before{
-  content: "";
-  position: absolute;
-  inset: -30%;
-  background: repeating-conic-gradient(from 0deg at 50% 50%, #ff5ec4 0deg 12deg, #14140f 12deg 24deg);
-  opacity: .85;
-  filter: blur(.4px);
-}
-.art-d::after{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(20,20,15,.95) 0%, rgba(20,20,15,.35) 60%, transparent 100%);
-}
+.work__tail strong{ color: var(--ink); font-weight: 500; }
 
 @media (max-width: 900px){
-  .work__grid{ grid-template-columns: 1fr; }
-  .card:nth-child(n){ grid-column: auto; margin-top: 0; }
-  .card{ margin-bottom: 34px; }
+  .work__strip{ grid-template-columns: 1fr; --strip-h: 170px; }
+  .work__still:nth-child(n){ grid-column: 1 / -1; }
+  /* 手机上不必再给手机截一张手机截图 */
+  .work__still:nth-child(3){ display: none; }
+  .work__still:nth-child(2) img{ object-position: 50% 0%; }
+  .work__split{ grid-template-columns: 1fr; }
 }
 
 /* --- 经历 --- */
@@ -1212,14 +1155,16 @@ body.is-ready .line > span{ animation-play-state: running; }
   margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: var(--t-mega);
-  line-height: .87;
+  /* 两行说完。再大的话这句就断成四行——四行的句子已经不是标题了。 */
+  font-size: clamp(27px, 7.6vw, 112px);
+  line-height: .9;
   letter-spacing: -.045em;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 .contact__big span{ display: block; overflow: hidden; }
 .contact__big span > i{ display: block; font-style: normal; }
-.contact__big span:nth-child(2) > i{ color: rgba(246, 247, 255, .46); }
+.contact__big span:nth-child(1) > i{ color: rgba(246, 247, 255, .46); }
 
 .contact .label{ color: var(--ink-faint); }
 .contact .label b{ color: var(--ink); }
@@ -1248,6 +1193,13 @@ body.is-ready .line > span{ animation-play-state: running; }
 @media (hover: hover) and (pointer: fine){
   .contact__mail:hover{ color: #d4ff3f; }
   .contact__mail:hover::after{ background: #d4ff3f; }
+}
+
+.contact__note{
+  margin: 16px 0 0;
+  max-width: 34ch;
+  color: var(--ink-soft);
+  line-height: 1.7;
 }
 
 .contact__foot{
@@ -1438,14 +1390,66 @@ body.is-ready .line > span{ animation-play-state: running; }
 
     <div class="sec__head">
       <p class="label r"><b>02</b> — Work / 作品</p>
-      <h2 class="sec__title r" style="--d:60ms">这块地方暂时空着。</h2>
-      <p class="sec__note r" style="--d:120ms">筹备中</p>
+      <h2 class="sec__title r" style="--d:60ms">第一件就是这个站点，<br>下一个位置留着。</h2>
+      <p class="sec__note r" style="--d:120ms">2 件</p>
     </div>
 
-    <div class="work__pending r">
-      <p class="work__pending-lead">还在攒。</p>
-      <p class="work__pending-note mono">第一件做出来就放这儿，会先发在 <a class="hud__link" href="https://x.com/mihooco0t">X</a></p>
-    </div>
+    <article class="work__entry r">
+      <h3 class="work__title">mihme <span>— 你正在看的这一页</span></h3>
+      <ul class="work__facts">
+        <li>手写 <b>HTML / CSS / JS</b></li>
+        <li><b>0</b> 依赖 · <b>0</b> 构建</li>
+        <li><b>2</b> 套主题 · <b>0</b> 外部请求</li>
+        <li>桌面 <b>4</b> 屏 / 手机 <b>3.4</b> 屏</li>
+      </ul>
+
+      <figure class="work__plate">
+        <img src="assets/work-site-light.jpg" width="1280" height="800" decoding="async"
+             alt="首页切到亮色主题：奶油底、黑字，立体的 HELLO 从蓝紫渐变成蓝色，右下是写封邮件的按钮">
+      </figure>
+
+      <div class="work__strip">
+        <figure class="work__still">
+          <img src="assets/work-site-band.jpg" width="1280" height="800" decoding="async"
+               alt="陈述带：深蓝底色上写着「一半时间想清楚，另一半时间做出来」，背后是一个巨大的空心 CRAFT">
+          <figcaption>陈述带 / 逐字揭开</figcaption>
+        </figure>
+        <figure class="work__still">
+          <img src="assets/work-site-type.jpg" width="640" height="335" decoding="async"
+               alt="深色主题下标题的三行字：FROM / IDEA / TO SHIPPED，最后一行是浅一档的灰蓝色">
+          <figcaption>标题 / 三行字重</figcaption>
+        </figure>
+        <figure class="work__still">
+          <img src="assets/work-site-mobile.jpg" width="560" height="1212" decoding="async"
+               alt="390 像素宽的手机版：信息压在顶部，HELLO 缩小，标题和按钮落在下半屏">
+          <figcaption>390 px</figcaption>
+        </figure>
+      </div>
+    </article>
+
+    <article class="work__entry r">
+      <div class="work__split">
+        <div>
+          <h3 class="work__title">tools/ <span>— 自己写的那套调试工具</span></h3>
+          <ul class="work__facts">
+            <li><b>11</b> 个脚本 + 1 个启动器</li>
+            <li>原生 <b>WebSocket</b> 直连 CDP</li>
+            <li>独立的临时 profile</li>
+          </ul>
+          <p class="work__desc">截图、滚动、量动效、逐帧采样都是自己写的，不挂 Puppeteer 也不需要构建。浏览器跑在隔离的临时 profile 里，结束时只关自己起的那个进程——这条是先把别人的浏览器关掉两次才学会的。</p>
+        </div>
+        <pre class="work__code"><code>/* 逐帧采样跑马灯的位移，量它有没有跳位 */
+const xs = [];
+const rec = () =&gt; {
+  const m = getComputedStyle(track).transform;
+  xs.push(m === 'none' ? 0 : new DOMMatrix(m).m41);
+  requestAnimationFrame(rec);
+};
+<span class="c">// maxStep 0.84px · median 0.83px → 位移连续，没有跳变</span></code></pre>
+      </div>
+    </article>
+
+    <p class="work__tail"><strong>剩下的还在攒。</strong>下一件做出来就放这儿，会先发在 <a class="hud__link" href="https://x.com/mihooco0t">X</a>。</p>
   </section>
 
   <div class="band" aria-hidden="true">
@@ -1484,12 +1488,11 @@ body.is-ready .line > span{ animation-play-state: running; }
   <section class="contact" id="contact">
     <div>
       <h2 class="contact__big" id="contactBig">
-        <span><i>Let’s</i></span>
-        <span><i>Build</i></span>
-        <span><i>Something</i></span>
-        <span><i>That Runs</i></span>
+        <span><i>Let’s build</i></span>
+        <span><i>something that runs</i></span>
       </h2>
       <a class="contact__mail" href="mailto:mihooj23@gmail.com">mihooj23@gmail.com</a>
+      <p class="contact__note">写什么都行：一个想法、一个页面、一段跑不通的脚本。我一般当天回。</p>
     </div>
 
     <div class="contact__foot mono">
